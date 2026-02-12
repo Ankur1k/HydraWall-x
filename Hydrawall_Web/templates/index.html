@@ -2,161 +2,224 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Hydrawall-X | AI Sentinel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HYDRAWALL-X | GLOBAL SENTINEL</title>
     <style>
-        /* Cyberpunk Security Theme */
-        body { 
-            background: #0b0e14; 
-            color: white; 
-            font-family: 'Courier New', monospace; 
-            text-align: center; 
-            padding: 30px; 
-            transition: background 0.5s; 
-            overflow-x: hidden;
+        :root {
+            --neon-green: #00ff41;
+            --neon-red: #ff3131;
+            --bg-black: #050505;
+            --panel-bg: rgba(0, 30, 0, 0.85);
         }
 
-        .header { margin-bottom: 20px; }
-        .status-badge {
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            text-transform: uppercase;
-            border: 1px solid #444;
-        }
-        .status-online { color: #4ade80; border-color: #4ade80; }
-        .status-alert { color: #f72585; border-color: #f72585; animation: blinker 1s infinite; }
-
-        .card { 
-            background: #1c2128; 
-            padding: 40px; 
-            border-radius: 20px; 
-            display: inline-block; 
-            border: 2px solid #444; 
-            box-shadow: 0 0 30px rgba(0,0,0,0.7);
-            margin-top: 20px;
-            min-width: 400px;
+        body {
+            background-color: var(--bg-black);
+            color: var(--neon-green);
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
         }
 
-        #health { font-size: 120px; color: #4ade80; font-weight: bold; transition: 0.5s; }
-        .threat-box { color: #888; font-size: 25px; margin-top: 20px; }
-        
-        /* The Audit Log Area */
-        .audit-container {
-            margin-top: 40px;
-            width: 80%;
-            max-width: 800px;
-            display: inline-block;
-        }
-        .audit-log {
-            background: #000; 
-            color: #0f0; 
-            padding: 20px; 
-            border-radius: 10px;
-            height: 200px; 
-            overflow-y: auto; 
-            text-align: left; 
-            font-size: 14px;
-            border: 1px solid #333;
-            box-shadow: inset 0 0 10px #0f03;
-        }
-        .log-entry { 
-            border-bottom: 1px solid #111; 
-            padding: 5px 0; 
-            font-family: 'Consolas', monospace;
+        /* Scanline CRT Effect */
+        body::before {
+            content: " ";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 3px, 3px 100%;
+            pointer-events: none;
+            z-index: 100;
         }
 
-        /* Alert Animations */
-        #alert-banner {
-            display: none; 
-            background: #f72585; 
-            color: white; 
-            padding: 15px;
-            font-size: 24px; 
-            font-weight: bold; 
-            border-radius: 10px; 
+        .main-frame {
+            border: 2px solid var(--neon-green);
+            box-shadow: 0 0 15px var(--neon-green);
+            background: var(--panel-bg);
+            width: 90%;
+            max-width: 1000px;
+            padding: 30px;
+            position: relative;
+            transition: all 0.4s ease;
+        }
+
+        .threat-alert {
+            border-color: var(--neon-red) !important;
+            box-shadow: 0 0 40px var(--neon-red) !important;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 1px solid var(--neon-green);
             margin-bottom: 20px;
+            padding-bottom: 10px;
         }
 
-        @keyframes blinker { 50% { opacity: 0; } }
+        .header h1 {
+            margin: 0;
+            letter-spacing: 10px;
+            text-shadow: 0 0 8px var(--neon-green);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 20px;
+        }
+
+        .stat-card {
+            border: 1px solid var(--neon-green);
+            padding: 15px;
+            background: rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        /* Radar Pulse Animation */
+        .radar-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid var(--neon-green);
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.9); opacity: 1; box-shadow: 0 0 0px var(--neon-green); }
+            70% { transform: scale(1.1); opacity: 0.7; box-shadow: 0 0 20px var(--neon-green); }
+            100% { transform: scale(0.9); opacity: 1; box-shadow: 0 0 0px var(--neon-green); }
+        }
+
+        .red-pulse {
+            border-color: var(--neon-red);
+            animation: pulse-red 0.5s infinite !important;
+        }
+
+        @keyframes pulse-red {
+            50% { box-shadow: 0 0 30px var(--neon-red); }
+        }
+
+        .health-bar-container {
+            width: 100%;
+            height: 20px;
+            background: #111;
+            border: 1px solid var(--neon-green);
+            margin-top: 10px;
+        }
+
+        .health-bar-fill {
+            height: 100%;
+            background: var(--neon-green);
+            width: 100%;
+            transition: width 0.5s ease;
+        }
+
+        #terminal {
+            height: 200px;
+            background: rgba(0,0,0,0.8);
+            border: 1px solid #333;
+            font-size: 0.75rem;
+            padding: 10px;
+            overflow-y: hidden;
+            display: flex;
+            flex-direction: column-reverse;
+        }
+
+        .log-entry { margin: 2px 0; color: #008f11; }
+        .log-threat { color: var(--neon-red); font-weight: bold; }
     </style>
 </head>
 <body>
 
+<div class="main-frame" id="main-frame">
     <div class="header">
-        <h1>🛡️ HYDRAWALL-X SENTINEL</h1>
-        <span id="status-text" class="status-badge status-online">System: Secure</span>
+        <h1>HYDRAWALL-X</h1>
+        <div id="connection-status" style="font-size: 0.8rem;">[ CONNECTION: ENCRYPTED_TUNNEL_ACTIVE ]</div>
     </div>
 
-    <div id="alert-banner">⚠️ CRITICAL THREAT DETECTED: AUTO-MITIGATION ACTIVE ⚠️</div>
+    <div class="grid">
+        <div class="left-panel">
+            <div class="stat-card">
+                <div>AI SCANNER STATUS</div>
+                <div id="radar" class="radar-circle">SENTINEL</div>
+                <div id="status-text" style="font-weight: bold;">STANDBY</div>
+            </div>
+            
+            <div class="stat-card" style="margin-top: 20px;">
+                NODE HEALTH
+                <div class="health-bar-container">
+                    <div id="health-bar" class="health-bar-fill"></div>
+                </div>
+                <span id="health-val">100%</span>
+            </div>
+        </div>
 
-    <div class="card">
-        <h3 style="letter-spacing: 2px; color: #888;">SYSTEM INTEGRITY SCORE</h3>
-        <div id="health">100%</div>
-        <div class="threat-box">Active Anomalies: <span id="threats" style="color:white;">0</span></div>
-        <p style="color: #444; margin-top: 15px;">Inference Engine: Isolation Forest (v2.4)</p>
-    </div>
-
-    <br>
-
-    <div class="audit-container">
-        <h4 style="text-align: left; color: #555;">SECURITY AUDIT LOG</h4>
-        <div class="audit-log" id="audit-log">
-            <div class="log-entry">[INFO] System Start: Real-time telemetry monitoring enabled.</div>
+        <div class="right-panel">
+            <div class="stat-card">
+                CURRENT THREAT COUNT
+                <div id="threat-val" style="font-size: 3rem; margin: 10px 0;">0</div>
+                <div style="font-size: 0.7rem; opacity: 0.6;">ISOLATION FOREST ANOMALY SCORE: <span id="score">0.00</span></div>
+            </div>
+            
+            <div id="terminal">
+                </div>
         </div>
     </div>
+</div>
 
-    <script>
-        let lastHealth = 100;
+<script>
+    function addLog(msg, isThreat = false) {
+        const terminal = document.getElementById('terminal');
+        const entry = document.createElement('div');
+        entry.className = isThreat ? 'log-entry log-threat' : 'log-entry';
+        entry.innerHTML = `> [${new Date().toLocaleTimeString()}] ${msg}`;
+        terminal.prepend(entry);
+    }
 
-        async function update() {
-            try {
-                const res = await fetch('/api/stats');
-                const data = await res.json();
-                
-                if(data.status === "Success") {
-                    const healthElement = document.getElementById('health');
-                    const threatElement = document.getElementById('threats');
-                    const banner = document.getElementById('alert-banner');
-                    const statusBadge = document.getElementById('status-text');
-                    const log = document.getElementById('audit-log');
-                    const time = new Date().toLocaleTimeString();
+    async function fetchData() {
+        try {
+            const response = await fetch('/api/stats');
+            const data = await response.json();
+            
+            const frame = document.getElementById('main-frame');
+            const radar = document.getElementById('radar');
+            const healthBar = document.getElementById('health-bar');
+            const statusText = document.getElementById('status-text');
 
-                    healthElement.innerText = data.health + "%";
-                    threatElement.innerText = data.threat_count;
-
-                    // Threat Detection State
-                    if(data.health < 100) {
-                        banner.style.display = "block";
-                        healthElement.style.color = "#f72585";
-                        document.body.style.backgroundColor = "#1a0505";
-                        statusBadge.innerText = "System: Mitigating Threat";
-                        statusBadge.className = "status-badge status-alert";
-
-                        // Log the event once per detection
-                        if(lastHealth === 100) {
-                            let entry = `<div class="log-entry" style="color:#f72585">[${time}] 🚨 ALERT: Behavioral anomaly detected! PIDs identified as malicious.</div>`;
-                            log.innerHTML = entry + log.innerHTML;
-                        }
-                    } 
-                    // Recovery State
-                    else {
-                        if(lastHealth < 100) {
-                            let entry = `<div class="log-entry" style="color:#4ade80">[${time}] ✅ RESOLVED: Threat neutralized. System health restored to 100%.</div>`;
-                            log.innerHTML = entry + log.innerHTML;
-                        }
-                        banner.style.display = "none";
-                        healthElement.style.color = "#4ade80";
-                        document.body.style.backgroundColor = "#0b0e14";
-                        statusBadge.innerText = "System: Secure";
-                        statusBadge.className = "status-badge status-online";
-                    }
-                    lastHealth = data.health;
-                }
-            } catch(e) { console.log("Re-establishing connection to Sentinel Hub..."); }
+            document.getElementById('health-val').innerText = data.health + "%";
+            document.getElementById('threat-val').innerText = data.threat_count;
+            healthBar.style.width = data.health + "%";
+            
+            if (data.threat_count > 0) {
+                frame.classList.add('threat-alert');
+                radar.classList.add('red-pulse');
+                statusText.innerText = "THREAT DETECTED";
+                statusText.style.color = "#ff3131";
+                healthBar.style.backgroundColor = "#ff3131";
+                addLog(`CRITICAL: Detected ${data.threat_count} anomalous process(es)`, true);
+            } else {
+                frame.classList.remove('threat-alert');
+                radar.classList.remove('red-pulse');
+                statusText.innerText = "SCANNING...";
+                statusText.style.color = "#00ff41";
+                healthBar.style.backgroundColor = "#00ff41";
+                addLog("Normal telemetry baseline established.");
+            }
+        } catch (e) {
+            console.log("Stream error:", e);
         }
+    }
 
-        // Refresh every 2 seconds for high-speed demo
-        setInterval(update, 2000);
-    </script>
+    setInterval(fetchData, 1000);
+</script>
+
 </body>
 </html>
